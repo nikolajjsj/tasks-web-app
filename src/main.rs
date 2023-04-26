@@ -10,7 +10,7 @@ async fn ping() -> impl Responder {
 }
 
 #[get("/")]
-async fn ping() -> impl Responder {
+async fn home() -> impl Responder {
     HttpResponse::Ok().body("Hello!")
 }
 
@@ -24,6 +24,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(ping)
+            .service(home)
     })
     .bind(("127.0.0.1", port.parse::<u16>().unwrap()))?
     .run()
