@@ -1,8 +1,8 @@
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
-#[macro_use]
-extern crate dotenv_codegen;
+extern crate dotenv;
 
-const PORT: &str = dotenv!("PORT");
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use dotenv::dotenv;
+use std::env;
 
 #[get("/ping")]
 async fn ping() -> impl Responder {
@@ -11,13 +11,16 @@ async fn ping() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
 
-    println!("API running on http://localhost:{}", &PORT);
+    let port = env::var("PORT").expect("No PORT found in environment variables");
+
+    println!("API running on http://localhost:{}", &port);
     HttpServer::new(|| {
         App::new()
             .service(ping)
     })
-    .bind(("127.0.0.1", PORT.parse::<u16>().unwrap()))?
+    .bind(("127.0.0.1", port.parse::<u16>().unwrap()))?
     .run()
     .await
 }
