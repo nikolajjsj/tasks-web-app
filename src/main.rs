@@ -9,6 +9,11 @@ async fn ping() -> impl Responder {
     HttpResponse::Ok().body("pong")
 }
 
+#[get("/")]
+async fn ping() -> impl Responder {
+    HttpResponse::Ok().body("Hello!")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
