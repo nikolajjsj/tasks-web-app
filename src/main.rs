@@ -1,34 +1,23 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+#[macro_use]
+extern crate dotenv_codegen;
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
+const PORT: &str = dotenv!("PORT");
 
 #[get("/ping")]
 async fn ping() -> impl Responder {
     HttpResponse::Ok().body("pong")
 }
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    println!("API running on http://localhost:{}", &PORT);
     HttpServer::new(|| {
         App::new()
-            .service(hello)
-            .service(echo)
             .service(ping)
-            .route("/hey", web::get().to(manual_hello))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", PORT.parse::<u16>().unwrap()))?
     .run()
     .await
 }
